@@ -1,18 +1,17 @@
 #include <stdio.h>
 
-void calculateScoringCombinations(int score) {
-    printf("Possible combinations of scoring plays:\n");
+void printCombinations(int score) {
+    int TD_2pt, TD_XP, FG, Safety;
+    int total_score;
 
-    for (int td1 = 0; td1 <= score / 6; ++td1) {
-        for (int two_pt1 = 0; two_pt1 <= (score - td1 * 6) / 2; ++two_pt1) {
-            for (int td2 = 0; td2 <= (score - td1 * 6 - two_pt1 * 2) / 6; ++td2) {
-                for (int three_pt = 0; three_pt <= (score - td1 * 6 - two_pt1 * 2 - td2 * 6) / 3; ++three_pt) {
-                    int remainingScore = score - td1 * 6 - two_pt1 * 2 - td2 * 6 - three_pt * 3;
-                    int safety = remainingScore / 2;
-
-                    // Check if the combination results in the desired score
-                    if (td1 * 6 + two_pt1 * 2 + td2 * 6 + three_pt * 3 + safety * 2 == score) {
-                        printf("%d TD + %d 2pt, %d TD + %d 3pt FG, %d Safety\n", td1, two_pt1, td2, three_pt, safety);
+    for (Safety = 0; Safety * 2 <= score; Safety++) {
+        for (FG = 0; FG * 3 <= score; FG++) {
+            for (TD_XP = 0; TD_XP * 7 <= score; TD_XP++) {
+                for (TD_2pt = 0; TD_2pt * 8 <= score; TD_2pt++) {
+                    total_score = TD_2pt * 8 + TD_XP * 7 + FG * 3 + Safety * 2;
+                    if (total_score == score) {
+                        printf("%d TD + 2pt, %d TD + XP, %d TD, %d 3pt FG, %d Safety\n",
+                            TD_2pt, TD_XP, TD_XP, FG, Safety);
                     }
                 }
             }
@@ -24,22 +23,17 @@ int main() {
     int score;
 
     while (1) {
-        printf("\nEnter a score (enter 0 or a negative number to exit): ");
+        printf("Enter a non-negative integer: ");
         scanf("%d", &score);
 
         if (score <= 1) {
-            printf("\nExiting program.\n");
+            printf("Terminating the program. Enter a value less than or equal to 1 to quit.\n");
             break;
         }
 
-        if (score < 2) {
-            printf("\nInvalid score. Please enter a score of 2 or higher.\n");
-            continue;
-        }
-
-        calculateScoringCombinations(score);
+        printf("Possible combinations of scoring plays for %d:\n", score);
+        printCombinations(score);
     }
 
     return 0;
 }
-
